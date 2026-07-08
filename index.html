@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maza Chicken — Фармоиши хӯрок</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red: #C21E2B;
+    --red-deep: #7A0F1C;
+    --red-bright: #E6432F;
+    --gold: #F0A93C;
+    --cream: #FFF7F1;
+    --ink: #2B1210;
+    --glass: rgba(255,255,255,0.5);
+    --glass-strong: rgba(255,255,255,0.72);
+    --glass-red: rgba(194,30,43,0.35);
+    --glass-border: rgba(255,255,255,0.6);
+    --shadow: 0 20px 60px rgba(122,15,28,0.25);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Manrope', sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,255,255,0.9), transparent 40%),
+      radial-gradient(circle at 85% 0%, rgba(240,169,60,0.25), transparent 45%),
+      linear-gradient(160deg, #FFF1E8 0%, #FFE3D6 35%, #FFC9BE 65%, #E6432F 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ambient blobs */
+  .blob{
+    position:fixed; border-radius:50%; filter:blur(60px); z-index:0; pointer-events:none;
+  }
+  .blob-1{width:420px; height:420px; background:var(--red-bright); opacity:0.25; top:-120px; left:-100px;}
+  .blob-2{width:380px; height:380px; background:var(--gold); opacity:0.3; bottom:-100px; right:-80px;}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 6vw;
+    background:var(--glass-strong);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border-bottom:1px solid var(--glass-border);
+  }
+
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:1.5rem;
+    color:var(--red-deep);
+    letter-spacing:-0.5px;
+  }
+  .logo-mark{
+    width:38px; height:38px; border-radius:12px;
+    background:linear-gradient(135deg, var(--red), var(--red-deep));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:1.1rem; font-weight:900;
+    box-shadow:0 8px 20px rgba(122,15,28,0.35);
+  }
+
+  nav{display:flex; align-items:center; gap:28px;}
+  nav a{
+    text-decoration:none; color:var(--ink); font-weight:600; font-size:0.95rem;
+    opacity:0.75; transition:opacity .2s;
+  }
+  nav a:hover{opacity:1;}
+
+  .cart-btn{
+    position:relative;
+    display:flex; align-items:center; gap:8px;
+    background:linear-gradient(135deg, var(--red), var(--red-bright));
+    color:#fff; border:none; padding:11px 20px; border-radius:100px;
+    font-weight:700; font-size:0.9rem; cursor:pointer;
+    box-shadow:0 10px 25px rgba(194,30,43,0.35);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .cart-btn:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(194,30,43,0.45);}
+  .cart-count{
+    background:#fff; color:var(--red-deep); font-weight:800; font-size:0.75rem;
+    width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  }
+
+  /* HERO */
+  .hero{
+    position:relative; z-index:1;
+    padding:70px 6vw 90px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--glass); backdrop-filter:blur(10px);
+    border:1px solid var(--glass-border);
+    padding:7px 16px; border-radius:100px;
+    font-size:0.8rem; font-weight:700; letter-spacing:0.5px;
+    color:var(--red-deep); margin-bottom:22px;
+  }
+  .eyebrow span.dot{width:7px; height:7px; border-radius:50%; background:var(--gold);}
+
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:clamp(2.6rem, 5vw, 4.2rem);
+    line-height:1.03;
+    letter-spacing:-1.5px;
+    color:var(--red-deep);
+  }
+  .hero h1 em{
+    font-style:normal;
+    background:linear-gradient(120deg, var(--red-bright), var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.sub{
+    margin-top:20px; font-size:1.08rem; line-height:1.6; color:#5A2A22; max-width:480px;
+  }
+  .hero-cta{margin-top:34px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--red), var(--red-bright));
+    color:#fff; border:none; padding:16px 30px; border-radius:16px;
+    font-weight:800; font-size:1rem; cursor:pointer;
+    box-shadow:0 16px 32px rgba(194,30,43,0.35);
+    transition:transform .2s;
+  }
+  .btn-primary:hover{transform:translateY(-3px);}
+  .btn-ghost{
+    background:var(--glass); backdrop-filter:blur(10px);
+    border:1px solid var(--glass-border);
+    color:var(--red-deep); padding:16px 26px; border-radius:16px;
+    font-weight:700; font-size:1rem; cursor:pointer; text-decoration:none;
+    display:inline-flex; align-items:center;
+  }
+
+  .hero-visual{
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:32px;
+    background:var(--glass-strong);
+    backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid var(--glass-border);
+    box-shadow:var(--shadow);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .hero-visual::before{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(194,30,43,0.18), rgba(240,169,60,0.18));
+  }
+  .hero-img{
+    position:relative; z-index:1;
+    width:100%; height:100%; object-fit:cover;
+  }
+
+  /* crispy scalloped divider */
+  .scallop{
+    position:relative; z-index:2; height:46px;
+    background-repeat:repeat-x; background-size:46px 46px;
+    background-image:radial-gradient(circle at 50% 0, transparent 22px, var(--cream) 23px);
+    margin-top:-2px;
+  }
+
+  /* MENU */
+  main{position:relative; z-index:1; background:var(--cream); padding-bottom:60px;}
+  .section-head{
+    text-align:center; padding:50px 6vw 10px;
+  }
+  .section-head .eyebrow{background:rgba(194,30,43,0.08); border-color:rgba(194,30,43,0.15);}
+  .section-head h2{
+    font-family:'Fraunces', serif; font-weight:800; font-size:clamp(2rem,3.5vw,2.8rem);
+    color:var(--red-deep); letter-spacing:-1px;
+  }
+  .section-head p{margin-top:10px; color:#7A5049; font-size:1rem;}
+
+  .menu-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:26px; padding:40px 6vw 20px; max-width:1300px; margin:0 auto;
+  }
+
+  .card{
+    background:var(--glass-strong);
+    backdrop-filter:blur(16px) saturate(160%);
+    border:1px solid var(--glass-border);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 14px 34px rgba(122,15,28,0.12);
+    transition:transform .25s, box-shadow .25s;
+    display:flex; flex-direction:column;
+  }
+  .card:hover{transform:translateY(-6px); box-shadow:0 22px 44px rgba(122,15,28,0.2);}
+
+  .card-img{
+    aspect-ratio:4/3;
+    background:linear-gradient(135deg, rgba(194,30,43,0.12), rgba(240,169,60,0.16));
+    position:relative; overflow:hidden;
+  }
+  .card-img img{
+    width:100%; height:100%; object-fit:cover;
+    transition:transform .35s ease;
+  }
+  .card:hover .card-img img{transform:scale(1.06);}
+  .badge{
+    position:absolute; top:12px; left:12px;
+    background:var(--red); color:#fff; font-size:0.7rem; font-weight:800;
+    padding:5px 11px; border-radius:100px; letter-spacing:0.3px;
+  }
+
+  .card-body{padding:20px 20px 22px; display:flex; flex-direction:column; gap:10px; flex:1;}
+  .card-body h3{font-family:'Fraunces', serif; font-size:1.2rem; font-weight:700; color:var(--ink);}
+  .card-body p{font-size:0.87rem; color:#7A5049; line-height:1.5; flex:1;}
+  .card-foot{display:flex; align-items:center; justify-content:space-between; margin-top:6px;}
+  .price{font-weight:800; font-size:1.15rem; color:var(--red-deep);}
+  .add-btn{
+    background:linear-gradient(135deg, var(--red), var(--red-bright));
+    color:#fff; border:none; width:42px; height:42px; border-radius:14px;
+    font-size:1.3rem; font-weight:700; cursor:pointer;
+    box-shadow:0 8px 18px rgba(194,30,43,0.3);
+    transition:transform .2s;
+  }
+  .add-btn:hover{transform:scale(1.08);}
+
+  /* CART DRAWER */
+  .overlay{
+    position:fixed; inset:0; background:rgba(43,18,16,0.45);
+    backdrop-filter:blur(4px);
+    opacity:0; pointer-events:none; transition:opacity .3s; z-index:90;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(400px, 92vw);
+    background:var(--glass-strong);
+    backdrop-filter:blur(24px) saturate(160%);
+    border-left:1px solid var(--glass-border);
+    box-shadow:-20px 0 60px rgba(122,15,28,0.25);
+    z-index:95; transform:translateX(100%); transition:transform .35s ease;
+    display:flex; flex-direction:column;
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{
+    padding:26px 24px 18px; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid rgba(122,15,28,0.1);
+  }
+  .drawer-head h3{font-family:'Fraunces', serif; font-size:1.4rem; color:var(--red-deep);}
+  .close-btn{background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--red-deep);}
+
+  .drawer-items{flex:1; overflow-y:auto; padding:10px 24px;}
+  .empty-cart{text-align:center; padding:60px 20px; color:#9A6F68;}
+  .empty-cart .icon{font-size:2.5rem; opacity:0.4; margin-bottom:10px;}
+
+  .cart-item{
+    display:flex; align-items:center; gap:12px; padding:14px 0;
+    border-bottom:1px solid rgba(122,15,28,0.08);
+  }
+  .cart-thumb{
+    width:52px; height:52px; border-radius:12px; flex-shrink:0;
+    background:linear-gradient(135deg, rgba(194,30,43,0.15), rgba(240,169,60,0.2));
+    overflow:hidden;
+  }
+  .cart-thumb img{width:100%; height:100%; object-fit:cover;}
+  .cart-info{flex:1;}
+  .cart-info h4{font-size:0.92rem; font-weight:700;}
+  .cart-info span{font-size:0.8rem; color:#9A6F68;}
+  .qty-ctrl{display:flex; align-items:center; gap:8px;}
+  .qty-ctrl button{
+    width:26px; height:26px; border-radius:8px; border:1px solid rgba(122,15,28,0.15);
+    background:#fff; color:var(--red-deep); font-weight:700; cursor:pointer;
+  }
+
+  .drawer-foot{padding:20px 24px 26px; border-top:1px solid rgba(122,15,28,0.1);}
+  .total-row{display:flex; justify-content:space-between; margin-bottom:16px; font-weight:800; font-size:1.1rem; color:var(--red-deep);}
+  .checkout-btn{
+    width:100%; background:linear-gradient(135deg, var(--red), var(--red-bright));
+    color:#fff; border:none; padding:16px; border-radius:16px;
+    font-weight:800; font-size:1rem; cursor:pointer;
+    box-shadow:0 14px 30px rgba(194,30,43,0.35);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .checkout-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .checkout-hint{text-align:center; font-size:0.75rem; color:#9A6F68; margin-top:10px;}
+
+  footer{
+    text-align:center; padding:36px 20px; color:#9A6F68; font-size:0.85rem;
+    background:var(--cream);
+  }
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr; text-align:center; padding-top:40px;}
+    .hero p.sub{margin-left:auto; margin-right:auto;}
+    .hero-cta{justify-content:center;}
+    nav{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">MC</div>
+    Maza Chicken
+  </div>
+  <nav>
+    <a href="#menu">Меню</a>
+    <a href="#about">Дар бораи мо</a>
+    <a href="#contact">Тамос</a>
+  </nav>
+  <button class="cart-btn" id="cartToggle">
+    🛒 Сабад <span class="cart-count" id="cartCount">0</span>
+  </button>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow"><span class="dot"></span> Тару тоза, ҳар рӯз пухта мешавад</div>
+    <h1>Мазаи <em>ҳақиқӣ</em>,<br>дар ҳар газидан</h1>
+    <p class="sub">Мурғи хрустӣ, соси махсус ва хӯриши гарм — фармоишро зуд диҳед, мо тайёр мекунем, шумо танҳо лаззат мебаред.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Менюро бинед</button>
+      <a href="#about" class="btn-ghost">Дар бораи мо →</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <img src="https://images.unsplash.com/photo-1569691899455-88464f6d3ab1?w=900&h=900&fit=crop&q=80" alt="Мурғи хрустии Maza Chicken" class="hero-img">
+  </div>
+</section>
+
+<div class="scallop"></div>
+
+<main>
+  <div class="section-head" id="menu">
+    <div class="eyebrow"><span class="dot" style="background:var(--red)"></span> МЕНЮ</div>
+    <h2>Хӯрокҳои маъмултарин</h2>
+    <p>Ҳар лаҳза тару тоза, ҳар порция бо ишқ пухта мешавад</p>
+  </div>
+
+  <div class="menu-grid" id="menuGrid"></div>
+</main>
+
+<footer id="contact">
+  <div class="logo" style="justify-content:center; margin-bottom:10px;">
+    <div class="logo-mark">MC</div> Maza Chicken
+  </div>
+  <p>Фармоиш тавассути Telegram қабул карда мешавад · Ҳар рӯз аз 10:00 то 23:00</p>
+  <p style="margin-top:6px; opacity:0.7;">© 2026 Maza Chicken. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</p>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>Сабади шумо</h3>
+    <button class="close-btn" id="closeDrawer">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div class="total-row"><span>Ҳамагӣ</span><span id="totalPrice">0 сомонӣ</span></div>
+    <button class="checkout-btn" id="checkoutBtn" disabled>
+      📩 Фиристодани фармоиш ба Telegram
+    </button>
+    <p class="checkout-hint">Пас аз пахш, бот дар Telegram кушода мешавад ва фармоиши шумо дар он ҷо тасдиқ карда мешавад</p>
+  </div>
+</div>
+
+<script>
+  // ====== ТАНЗИМОТИ ТЕЛЕГРАМ БОТ ======
+  // Дар ин ҷо номи (username)-и боти худро гузоред, масалан: "maza_chicken_bot"
+  // Силкаро (username-ро) худи корбар пур мекунад:
+  const TELEGRAM_BOT_USERNAME = ""; // <-- ИН ҶОРО ХОЛӢ МОНДЕМ, ХУДАТОН ПУР КУНЕД
+
+  const MENU = [
+    {id:1, name:"Мурғи хрустӣ (3 пора)", desc:"Мурғи маринадшуда бо кранч дар берун, нарм дар дарун", price:65, badge:"Маъмул", img:"https://images.unsplash.com/photo-1426869981800-95ebf51ce900?w=700&h=525&fit=crop&q=80"},
+    {id:2, name:"Мурғи хрустӣ (5 пора)", desc:"Порцияи калон барои иштиҳои калон", price:98, badge:null, img:"https://images.unsplash.com/photo-1608039755401-742074f0548d?w=700&h=525&fit=crop&q=80"},
+    {id:3, name:"Бургери Maza", desc:"Кулчаи мулоим, мурғи хрустӣ, сабзавот ва соси махсус", price:42, badge:"Нав", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=700&h=525&fit=crop&q=80"},
+    {id:4, name:"Стрипс (5 дона)", desc:"Пораҳои дарози мурғи хрустӣ бо соси интихобӣ", price:55, badge:null, img:"https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=700&h=525&fit=crop&q=80"},
+    {id:5, name:"Ситоки картошка", desc:"Картошкаи хрустӣ бо намаки махсус", price:20, badge:null, img:"https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=700&h=525&fit=crop&q=80"},
+    {id:6, name:"Криспи бол (6 дона)", desc:"Болҳои хрустии тунд, барои дӯстдорони тундӣ", price:48, badge:"Тунд", img:"https://images.unsplash.com/photo-1637273484026-11d51fb64024?w=700&h=525&fit=crop&q=80"},
+    {id:7, name:"Комбо барои як нафар", desc:"1 мурғ + картошка + нӯшокӣ", price:85, badge:"Даромад", img:"https://images.unsplash.com/photo-1639131285716-3fc7f624f138?w=700&h=525&fit=crop&q=80"},
+    {id:8, name:"Нӯшокии хунук 0.5л", desc:"Кола, Фанта ё Спрайт — интихоби шумо", price:12, badge:null, img:"https://images.unsplash.com/photo-1755591985485-870d2ef775fd?w=700&h=525&fit=crop&q=80"},
+  ];
+
+  const cart = {}; // id -> qty
+
+  const grid = document.getElementById('menuGrid');
+  MENU.forEach(item=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-img">
+        ${item.badge ? `<span class="badge">${item.badge}</span>` : ''}
+        <img src="${item.img}" alt="${item.name}">
+      </div>
+      <div class="card-body">
+        <h3>${item.name}</h3>
+        <p>${item.desc}</p>
+        <div class="card-foot">
+          <span class="price">${item.price} сомонӣ</span>
+          <button class="add-btn" data-id="${item.id}">+</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  grid.addEventListener('click', e=>{
+    if(e.target.classList.contains('add-btn')){
+      const id = e.target.dataset.id;
+      cart[id] = (cart[id]||0) + 1;
+      renderCart();
+      openDrawer();
+    }
+  });
+
+  function renderCart(){
+    const drawerItems = document.getElementById('drawerItems');
+    const ids = Object.keys(cart).filter(id=>cart[id] > 0);
+    let count = 0, total = 0;
+
+    if(ids.length === 0){
+      drawerItems.innerHTML = `<div class="empty-cart"><div class="icon">🍗</div><p>Сабади шумо холӣ аст</p></div>`;
+    } else {
+      drawerItems.innerHTML = ids.map(id=>{
+        const item = MENU.find(m=>m.id == id);
+        count += cart[id];
+        total += cart[id] * item.price;
+        return `
+          <div class="cart-item">
+            <div class="cart-thumb"><img src="${item.img}" alt="${item.name}"></div>
+            <div class="cart-info">
+              <h4>${item.name}</h4>
+              <span>${item.price} сомонӣ</span>
+            </div>
+            <div class="qty-ctrl">
+              <button data-id="${id}" data-act="dec">−</button>
+              <span>${cart[id]}</span>
+              <button data-id="${id}" data-act="inc">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('cartCount').textContent = count;
+    document.getElementById('totalPrice').textContent = total + ' сомонӣ';
+    document.getElementById('checkoutBtn').disabled = count === 0;
+  }
+
+  document.getElementById('drawerItems').addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    if(btn.dataset.act === 'inc') cart[id]++;
+    if(btn.dataset.act === 'dec') cart[id] = Math.max(0, cart[id]-1);
+    renderCart();
+  });
+
+  function openDrawer(){
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+  }
+  function closeDrawer(){
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+  }
+  document.getElementById('cartToggle').addEventListener('click', openDrawer);
+  document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+  document.getElementById('overlay').addEventListener('click', closeDrawer);
+
+  document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+    const ids = Object.keys(cart).filter(id=>cart[id] > 0);
+    if(ids.length === 0) return;
+
+    let lines = [];
+    let total = 0;
+    ids.forEach(id=>{
+      const item = MENU.find(m=>m.id == id);
+      lines.push(`${item.name} x${cart[id]}`);
+      total += cart[id]*item.price;
+    });
+    const orderText = `Фармоиш аз Maza Chicken:%0A${lines.join('%0A')}%0A%0AҲамагӣ: ${total} сомонӣ`;
+
+    if(!TELEGRAM_BOT_USERNAME){
+      alert('Диққат: username-и боти Telegram ҳанӯз гузошта нашудааст. Онро дар код, дар қисми TELEGRAM_BOT_USERNAME илова кунед.');
+      return;
+    }
+    // Кушодани бот дар Telegram бо матни фармоиш
+    const url = `https://t.me/${TELEGRAM_BOT_USERNAME}?text=${orderText}`;
+    window.open(url, '_blank');
+  });
+</script>
+
+</body>
+</html>
